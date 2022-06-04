@@ -1,20 +1,24 @@
-def pentagonal(n):
-    return n*(3*n-1) // 2
+def get_pentagonal(n):
+    k = (n+1) // 2 if n %2 == 1 else -n // 2
+    return k*(3*k-1) // 2 
 
-def get_partitions(limit):
+def get_partitions(divisor):
     partitions = [1]
-    for n in range(1, limit):
-        partitions.append(0)
-        for k in range(1, n+1):
-            coeff = -1 if k%2==0 else 1
-            for t in [pentagonal(k), pentagonal(-k)]:
-                if (n-t) >= 0:
-                    partitions[n] += coeff*partitions[n-t]
-        partitions[n] %= 1000000
-        print(partitions[n])
-        if partitions[n] == 0:
-            return n
-    print(partitions)
-
+    while True:
+        p_n = 0
+        n = len(partitions)
+        k = 1
+        pent_num = 1 
+        while pent_num <= n: 
+            multiplier = 1 if (k-1)% 4 < 2 else -1
+            p_n += multiplier*partitions[n-pent_num]
+            #print("Added " + str(multiplier*partitions[n-pent_num]) + " to p_" + str(n))
+            k += 1
+            pent_num = get_pentagonal(k)
+        if p_n % divisor == 0:
+            print(partitions)
+            print(p_n)
+            return len(partitions)
+        partitions.append(p_n)
 
 print(get_partitions(1000000))
